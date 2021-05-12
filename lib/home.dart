@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:country_list_pick/country_list_pick.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './verify.dart';
-
+import 'package:sms_autofill/sms_autofill.dart';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -24,8 +24,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _getFirebaseUser();
+    
   }
-
+_getsign()async{
+ final signcode = await SmsAutoFill().getAppSignature;
+    print(signcode);
+}
   Future<void> _getFirebaseUser() async {
     this._firebaseUser = await FirebaseAuth.instance.currentUser;
     setState(() {
@@ -197,6 +201,7 @@ class _HomePageState extends State<HomePage> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
+                    _getsign();
                     _submitPhoneNumber(countryCode);
                   },
                   child: Text(

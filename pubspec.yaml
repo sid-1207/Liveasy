@@ -33,6 +33,8 @@ dependencies:
   firebase_core: ^1.1.0
   firebase_auth: ^1.1.3
   language_pickers: ^0.2.0+1
+  pin_input_text_field: ^4.0.0
+  sms_autofill: ^2.0.0
   
 
 dev_dependencies:

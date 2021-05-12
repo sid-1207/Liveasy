@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './selection.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class Verify extends StatefulWidget {
   String phoneNumber;
@@ -24,6 +24,16 @@ class _VerifyState extends State<Verify> {
   void initState() {
     super.initState();
     _getFirebaseUser();
+    _getsign();
+  }
+
+  _getsign() async {
+    // final signcode = await SmsAutoFill().getAppSignature;
+    // print("hi");
+    // print(signcode);
+     print("autofill");
+    await SmsAutoFill().listenForCode;
+    print("done");
   }
 
   void _handleError(e) {
@@ -79,8 +89,7 @@ class _VerifyState extends State<Verify> {
     _login();
   }
 
-
-   Future<void> _submitPhoneNumber(String cc) async {
+  Future<void> _submitPhoneNumber(String cc) async {
     /// Either append your phone number country code or add in the code itself
     String phoneNumber = widget.phoneNumber;
     print(phoneNumber);
@@ -110,8 +119,8 @@ class _VerifyState extends State<Verify> {
       setState(() {
         status += 'Code Sent\n';
       });
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (builder) => Verify(phoneNumber, verif)));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (builder) => Verify(phoneNumber, verif)));
     }
 
     void codeAutoRetrievalTimeout(String verificationId) {
@@ -128,7 +137,7 @@ class _VerifyState extends State<Verify> {
       /// only reads in `milliseconds`
       timeout: Duration(milliseconds: 10000),
 
-    //verification completed
+      //verification completed
       verificationCompleted: verificationCompleted,
 
       /// Called when the verification is failed
@@ -139,9 +148,9 @@ class _VerifyState extends State<Verify> {
 
       /// After automatic code retrival `timeout` this function is called
       codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    ); 
- 
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,13 +173,25 @@ class _VerifyState extends State<Verify> {
             SizedBox(
               height: 30,
             ),
-            PinEntryTextField(
-              fields: 6,
-              showFieldAsBox: true,
-              onSubmit: (String pin) {
+            // PinEntryTextField(
+            //   fields: 6,
+            //   showFieldAsBox: true,
+            //   onSubmit: (String pin) {
+            //     otp = pin;
+            //     print(otp);
+            //     _submitOTP(otp);
+            //   },
+            // ),
+            PinFieldAutoFill(
+              onCodeChanged: (pin) {
                 otp = pin;
-                print(otp);
+                print(pin);
               },
+              onCodeSubmitted: (pin){
+                otp=pin;
+                _submitOTP(otp);
+              },
+              
             ),
             SizedBox(
               height: 10,
